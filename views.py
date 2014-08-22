@@ -36,7 +36,7 @@ def lti_launch(request):
         request.session['lis_course_offering_sourcedid'] = course_id
         request.session['user_id'] = enc_user_id
 
-        return render(request, 'student_locations/map_view_new.html', {'request': request, 'api_key': key})
+        return render(request, 'student_locations/map_view.html', {'request': request, 'api_key': key})
     else:
         return render(request, 'student_locations/error.html', {'message': 'Error: user is not authenticated!'})
 
@@ -97,7 +97,7 @@ def addoredituser(request):
         theform.course_id = course_id
         theform.save()
         key = settings.STUDENT_LOCATIONS_TOOL.get('google_map_api_v3_key')
-        return render(request, 'student_locations/map_view_new.html', {'request': request, 'api_key' : key})
+        return render(request, 'student_locations/map_view.html', {'request': request, 'api_key' : key})
     else:
         return render(request, 'student_locations/user_edit_view.html', {'request': request, 'form': form})
 

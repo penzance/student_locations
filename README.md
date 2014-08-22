@@ -1,4 +1,4 @@
-student-locations
+student locations
 =================
 
 an LTI tool that allows students to add thier location and contact info to a google map
@@ -57,3 +57,4 @@ As long as you don't see any errors you should be able to naviage to the index p
 ```
 http://localhost:8000/student_locations/
 ```
+copy the student_location.js file to your projects static files directory.

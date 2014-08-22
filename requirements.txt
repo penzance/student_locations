@@ -5,3 +5,4 @@ oauth2
 requests
 django-crispy-forms
 
+git+ssh://git@github.com/Harvard-University-iCommons/django-auth-lti.git@v0.7#egg=django-auth-lti

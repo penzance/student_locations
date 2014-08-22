@@ -1,0 +1,38 @@
+
+{% extends "icommons_ui/base_lti.html" %}
+{% load static %}
+
+{% block stylsheet %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+       <p><a href="{% url 'sl:user_edit_view' %}">Edit My Information</a>&#160;|&#160;<a href="{% url 'sl:main' %}">View Map</a>&#160;|&#160;<a href="{% url 'sl:table_view' %}">View Table</a></p>
+
+        <table class="table table-striped table-bordered table-condensed">
+            <caption>Student Listing</caption>
+            <thead>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Country</th>
+                <th>Region</th>
+                <th>Locality</th>
+            </thead>
+            <tbody>
+                {%  for rec in data %}
+                <tr>
+                    <td> {% if rec.first_name_permission %}  {{ rec.first_name }} {% endif %}</td>
+                    <td> {% if rec.last_name_permission %} {{ rec.last_name }} {% endif %}</td>
+                    <td> {% if rec.organization_permission %}  {{ rec.organization  }}{% endif %} </td>
+                    <td> {% if rec.email_permission %}  <a href="mailto:{{ rec.email }}">{{ rec.email }}</a> {% endif %}</td>
+                    <td> {{ rec.country }} </td>
+                    <td> {{ rec.region }} </td>
+                    <td> {{ rec.locality }} </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+{% endblock %}

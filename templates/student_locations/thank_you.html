@@ -1,0 +1,12 @@
+{% extends "icommons_ui/base_lti.html" %}
+{% load static %}
+
+{% block stylsheet %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+
+<h1>Saved</h1>
+<p class="help-block">Thank you.  Your information has been saved. <a href="{% url 'sl:main' %}">View Map</a></p>
+{% endblock %}

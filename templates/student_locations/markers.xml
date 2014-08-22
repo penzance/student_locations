@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<markers>
+    {%  for rec in data %}
+    <marker lat="{{ rec.generated_latitude }}" lng="{{ rec.generated_longitude }}">
+        <content>
+            <strong>
+                {% if rec.first_name_permission %}{{ rec.first_name }}{% endif %} 
+                {% if rec.last_name_permission %}{{ rec.last_name  }}{% endif %}
+            </strong>
+            <br/>
+            {% if rec.email_permission %} 
+                <a href="mailto:{{ rec.email }}">{{ rec.email }}</a>
+            {% endif %}
+            <br/>
+            {% if rec.organization_permission %} 
+                {{ rec.organization  }} 
+            {% endif %}
+            <br />
+            {{ rec.locality }}, {{ rec.region }}, {{ rec.country }} 
+            <br />
+        </content>
+    </marker>
+    {% endfor %}
+</markers>

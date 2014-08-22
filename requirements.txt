@@ -1,0 +1,7 @@
+Django>=1.6
+ims_lti_py
+lxml
+oauth2
+requests
+django-crispy-forms
+

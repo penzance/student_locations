@@ -10,7 +10,6 @@ import urllib
 import urllib2
 import urlparse
 import json
-
 from django.forms import ModelForm
 from models import Locations
 

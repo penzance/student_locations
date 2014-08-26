@@ -9,7 +9,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from student_locations.forms import StudentLocationForm
 from student_locations.models import Locations
+from student_locations.utils import validaterequiredltiparams
+
 import logging 
+import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -25,20 +28,47 @@ def index(request):
 @login_required()
 @require_http_methods(['POST'])
 def lti_launch(request):
-    """
-    launch the lti application
-    """	
     if request.user.is_authenticated():
-    	key = settings.STUDENT_LOCATIONS_TOOL.get('google_map_api_v3_key')
-    	course_id = request.POST.get['lis_course_offering_sourcedid']
-        enc_user_id = request.POST.get['user_id']
-
-        request.session['lis_course_offering_sourcedid'] = course_id
-        request.session['user_id'] = enc_user_id
-
-        return render(request, 'student_locations/map_view.html', {'request': request, 'api_key': key})
+        return redirect('sl:main')
     else:
         return render(request, 'student_locations/error.html', {'message': 'Error: user is not authenticated!'})
+
+@login_required()
+@require_http_methods(['GET'])
+def main(request):
+    key = settings.STUDENT_LOCATIONS_TOOL.get('google_map_api_v3_key')
+    logger.debug('In main')
+    return render(request, 'student_locations/map_view_new.html', {'request': request, 'api_key': key})
+
+
+
+
+#@login_required()
+# @require_http_methods(['GET'])
+# def lti_launch(request):
+#     """
+#     launch the lti application
+#     """	
+#     if not validaterequiredltiparams(request):
+#         return render(request, 'student_locations/error.html', {'message': 'lis_course_offering_sourcedid not present in LTI request.'})
+
+
+#     pp = pprint.PrettyPrinter(indent=4)
+#     if request.user.is_authenticated():
+#         print 'user is authenticated!'
+
+#         key = settings.STUDENT_LOCATIONS_TOOL.get('google_map_api_v3_key')
+#         print 'Key : %s' % key
+
+#         course_id = request.POST.get('lis_course_offering_sourcedid')
+#         enc_user_id = request.POST.get('user_id')
+        
+#         request.session['lis_course_offering_sourcedid'] = course_id
+#         request.session['user_id'] = enc_user_id
+
+#         return render(request, 'student_locations/map_view.html', {'request': request, 'api_key': key})
+#     else:
+#         return render(request, 'student_locations/error.html', {'message': 'Error: user is not authenticated!'})
 
 #@login_required()
 #@require_http_methods(['GET'])
@@ -48,7 +78,7 @@ def lti_launch(request):
 #    return render(request, 'student_locations/map_view_new.html', {'request': request, 'api_key': key})
 
 
-@login_required()
+#@login_required()
 @require_http_methods(['GET'])
 def user_edit_view(request):
     
@@ -70,7 +100,7 @@ def user_edit_view(request):
 
     return render(request, 'student_locations/user_edit_view.html', {'request': request, 'form': form})
 
-@login_required()
+#@login_required()
 def addoredituser(request):
     
     course_id = request.session['lis_course_offering_sourcedid']
@@ -101,7 +131,7 @@ def addoredituser(request):
     else:
         return render(request, 'student_locations/user_edit_view.html', {'request': request, 'form': form})
 
-@login_required()
+#@login_required()
 @require_http_methods(['GET'])
 def table_view(request):
     
@@ -110,7 +140,7 @@ def table_view(request):
     logger.debug('course_id: '+course_id)
     return render(request, 'student_locations/table_view.html', {'request': request, 'data' : students})
 
-@login_required()
+#@login_required()
 @require_http_methods(['GET'])
 def markers_class_xml(request):
       

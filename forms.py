@@ -6,6 +6,7 @@ from crispy_forms.bootstrap import FormActions
 from django.core.validators import validate_email, MaxValueValidator, MinValueValidator, RegexValidator
 from django.utils.translation import gettext as _
 from django.core.exceptions import ValidationError
+from student_locations.utils import getlatlongfromurl
 import urllib
 import urllib2
 import urlparse
@@ -193,7 +194,7 @@ class StudentLocationForm(forms.ModelForm):
 
     def clean(self):
 
-        cleaned_data = super(StudentLocationForm2, self).clean()
+        cleaned_data = super(StudentLocationForm, self).clean()
         address = cleaned_data.get('address') 
         latitude = cleaned_data.get('latitude') 
         longitude = cleaned_data.get('longitude')
@@ -219,42 +220,36 @@ class StudentLocationForm(forms.ModelForm):
             # We validate that we got a real url and not just a string of data
             try:
                 urllib.urlopen(mapurl)
-                query = urlparse.urlparse(mapurl).query
-                query_dict = urlparse.parse_qs(query)
-                # If the mapurl does not contain the 'll' param (lat/long coords), we don't have a proper google map url.
-                # Throw and exception.
+                #query = urlparse.urlparse(mapurl).query
+                #query_dict = urlparse.parse_qs(query)
                 #https://www.google.com/maps/@42.2733204,-83.7376894,12z
                 # https://www.google.com/maps/place/Antarctica/@-75,0,2z/data=!3m1!4b1!4m2!3m1!1s0xb09dff882a7809e1:0xb08d0a385dc8c7c7
 
-                if 'll' in query_dict:
-                    cleaned_data['mapurl'] = mapurl
-                    latlong = query_dict['ll']
-                elif '@' in mapurl:
-                    for urlpart in mapurl:
-                        if '@' in urlpart:
-                            latlonglist = urlpart.split(',')
+                latlong = getlatlongfromurl(mapurl)
+                print latlong
                             
-                if 'll' not in query_dict:
-                    msg = "Invalid map url"
-                    self._errors["mapurl"] = self.error_class([msg])
-                    raise forms.ValidationError(msg)
-                else:
+                if latlong:
                     cleaned_data['mapurl'] = mapurl
-                    latlong = query_dict['ll']
-                    url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='+latlong[0]+'&sensor=true'
+                    url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='+latlong+'&sensor=true'
                     data = urllib2.urlopen(url).read()
                     json_data = json.loads(data)
+                else:
+                    msg = "We were unable to parse lat/long coordinates from the given map url."
+                    self._errors["mapurl"] = self.error_class([msg])
+                    raise forms.ValidationError(msg)
+                    
 
             except UnicodeError:
-                ms = u"Invalid map url"
+                ms = u"UnicodeError in map url"
                 self._errors["mapurl"] = self.error_class([msg])
                 raise forms.ValidationError(msg)
             except IOError:
-                msg = u"Invalid map url"
+                msg = u"IOError in map url"
                 self._errors["mapurl"] = self.error_class([msg])
                 raise forms.ValidationError(msg)
-            except:
-                msg = u"Invalid map url"
+            except Exception as e:
+                print '%s' % e
+                msg = u"Exception map url"
                 self._errors["mapurl"] = self.error_class([msg])
                 raise forms.ValidationError(msg)
                 
@@ -333,7 +328,7 @@ class StudentLocationForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True, *args, **kwargs):
-        instance = super(StudentLocationForm2, self).save(commit=False, *args, **kwargs)
+        instance = super(StudentLocationForm, self).save(commit=False, *args, **kwargs)
 
         cleaned_data = self.cleaned_data
         instance.generated_latitude = cleaned_data['generated_latitude']
@@ -345,4 +340,7 @@ class StudentLocationForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+                    
 

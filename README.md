@@ -12,8 +12,14 @@ Clone the git repository to the project
 ```
 git clone https://github.com/penzance/student-locations.git
 ```
-Add the app url to the project urls.py file
 
+Change into the student_locations directory and run a pip install on the
+requirements file.
+```
+pip install -r requirements.txt
+```
+
+Add the app url to the project urls.py file
 ```
 urlpatterns = patterns('',
     ...
@@ -22,13 +28,15 @@ urlpatterns = patterns('',
 )
 ```
 
-Add 'student_locations' to the installed apps block in the project settings.py file
+Add 'student_locations' to the installed apps block in the project settings.py file. You also installed crispy forms as part of the pip install so go ahead and add that as well.
 ```
 INSTALLED_APPS = (
     ...
     'student_locations',
+    'crispy_forms',
 )
 ```
+
 Add the following to your project settings.py file
 ```
 STUDENT_LOCATIONS_TOOL = {
@@ -37,12 +45,10 @@ STUDENT_LOCATIONS_TOOL = {
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-LTI_OAUTH_CREDENTIALS = { 'changeme' : 'changeme', }
 ```
 
 The app uses the Django default sqlite database out of the box, if you want to change this update the database block in your settings.py file. Prepare the app schema by running syncdb, make sure you are in the root of your project where the manage.py 
 file is located.
-
 ```
 python manage.py syncdb
 ```

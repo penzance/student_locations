@@ -1,10 +1,13 @@
-
-{% extends "icommons_ui/base_lti.html" %}
-{% load static %}
-
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>LTI Student Locations Map View</title>
 {% block stylsheet %}
-{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}" media="screen"/>
 {% endblock %}
+</head>
+<body>
 
 {% block content %}
        <p><a href="{% url 'sl:user_edit_view' %}">Edit My Information</a>&#160;|&#160;<a href="{% url 'sl:main' %}">View Map</a>&#160;|&#160;<a href="{% url 'sl:table_view' %}">View Table</a></p>
@@ -36,3 +39,5 @@
         </table>
 
 {% endblock %}
+</body>
+</html>

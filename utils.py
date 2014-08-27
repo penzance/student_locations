@@ -1,4 +1,5 @@
 import urlparse
+from django.conf import settings
 
 def getlatlongfromurl(mapurl):
     query = urlparse.urlparse(mapurl).query
@@ -18,6 +19,13 @@ def validaterequiredltiparams(request):
     """
     verify that the required LTI parameters are present in the request object.
     """
-    if 'lis_course_offering_sourcedid' in request.POST:
-        return True
+    lti_launch = set(request.session.get('LTI_LAUNCH'))
+    required_params = set(settings.STUDENT_LOCATIONS_TOOL.get('required_lti_params'))
+    return required_params.issubset(lti_launch)
+    
+
+def getparamfromsession(request, param):
+    lti_launch = request.session.get('LTI_LAUNCH')
+    return lti_launch.get(param)
+
 

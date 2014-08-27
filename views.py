@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, render_to_response
 from django.views.decorators.http import require_http_methods
-from ims_lti_py.tool_provider import DjangoToolProvider
 from ims_lti_py.tool_config import ToolConfig
 from django.conf import settings
 from django.template import RequestContext
@@ -9,121 +8,94 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from student_locations.forms import StudentLocationForm
 from student_locations.models import Locations
-from student_locations.utils import validaterequiredltiparams
+from student_locations.utils import validaterequiredltiparams, getparamfromsession
 
 import logging 
-import pprint
+
 
 logger = logging.getLogger(__name__)
 
-#@login_required()
+@login_required()
 @require_http_methods(['GET'])
 def index(request):
     """
     Show the index file
     """
-    logger.info("request to index.")
     return render(request, 'student_locations/index.html')
 
 @login_required()
 @require_http_methods(['POST'])
 def lti_launch(request):
+    """
+    This method is here to build the LTI_LAUNCH dictionary containing all
+    the LTI parameters and place it into the session. This is nessesary as we 
+    need to access these parameters throughout the application and they are only 
+    available the first time the application loads.
+    """
     if request.user.is_authenticated():
-        return redirect('sl:main')
+        if validaterequiredltiparams(request):
+            return redirect('sl:main')
+        else: 
+            return render(request, 'student_locations/error.html', {'message': 'Error: The LTI parameter lis_course_offering_sourcedid is required by this LTI tool.'})
     else:
         return render(request, 'student_locations/error.html', {'message': 'Error: user is not authenticated!'})
 
 @login_required()
 @require_http_methods(['GET'])
 def main(request):
+    """
+    The main method dipslay the default view which is the map_view.
+    """
     key = settings.STUDENT_LOCATIONS_TOOL.get('google_map_api_v3_key')
-    logger.debug('In main')
-    return render(request, 'student_locations/map_view_new.html', {'request': request, 'api_key': key})
+    return render(request, 'student_locations/map_view.html', {'request': request, 'api_key': key})
 
 
-
-
-#@login_required()
-# @require_http_methods(['GET'])
-# def lti_launch(request):
-#     """
-#     launch the lti application
-#     """	
-#     if not validaterequiredltiparams(request):
-#         return render(request, 'student_locations/error.html', {'message': 'lis_course_offering_sourcedid not present in LTI request.'})
-
-
-#     pp = pprint.PrettyPrinter(indent=4)
-#     if request.user.is_authenticated():
-#         print 'user is authenticated!'
-
-#         key = settings.STUDENT_LOCATIONS_TOOL.get('google_map_api_v3_key')
-#         print 'Key : %s' % key
-
-#         course_id = request.POST.get('lis_course_offering_sourcedid')
-#         enc_user_id = request.POST.get('user_id')
-        
-#         request.session['lis_course_offering_sourcedid'] = course_id
-#         request.session['user_id'] = enc_user_id
-
-#         return render(request, 'student_locations/map_view.html', {'request': request, 'api_key': key})
-#     else:
-#         return render(request, 'student_locations/error.html', {'message': 'Error: user is not authenticated!'})
-
-#@login_required()
-#@require_http_methods(['GET'])
-#def main(request):
-    #key = settings.STUDENT_LOCATIONS_TOOL.get('google_map_api_v3_key')
-    #logger.debug('In main')
-#    return render(request, 'student_locations/map_view_new.html', {'request': request, 'api_key': key})
-
-
-#@login_required()
+@login_required()
 @require_http_methods(['GET'])
 def user_edit_view(request):
-    
-    course_id = request.session['LTI_LAUNCH']['lis_course_offering_sourcedid']
-    enc_user_id = request.session['LTI_LAUNCH']['user_id']
-
-    logger.debug('In user_edit_view : course_id='+course_id)
-
+    """
+    Displays the user edit view which allows users to enter their contact
+    and Location data for display on the google map.
+    """
+    course_id = getparamfromsession(request, 'lis_course_offering_sourcedid')
+    user_id = getparamfromsession(request, 'user_id')
+    if not course_id or not user_id:
+        return render(request, 'student_locations/error.html', {'message': 'Unable to retrieve params from session. You might want to try reloading the tool.'})
+   
     try:
-        student = Locations.objects.get(course_id=course_id, user_id=enc_user_id)
+        student = Locations.objects.get(course_id=course_id, user_id=user_id)
     except Locations.DoesNotExist:
         student = None
 
     if student:
         form = StudentLocationForm(instance=student)
     else:
-        logger.debug('student is None')
         form = StudentLocationForm()
 
     return render(request, 'student_locations/user_edit_view.html', {'request': request, 'form': form})
 
-#@login_required()
+@login_required()
 def addoredituser(request):
+    """
+    The action method for the user_edit_view form.
+    """
+    course_id = getparamfromsession(request, 'lis_course_offering_sourcedid')
+    user_id = getparamfromsession(request, 'user_id')
     
-    course_id = request.session['lis_course_offering_sourcedid']
-    enc_user_id = request.session['user_id']
-
-    logger.debug('In addoredituser : course_id='+course_id)
-
     try:
-        student = Locations.objects.get(course_id=course_id, user_id=enc_user_id)
+        student = Locations.objects.get(course_id=course_id, user_id=user_id)
     except Locations.DoesNotExist:
         student = None
 
     if student:
-        form = StudentLocationForm(instance=student, user_id=enc_user_id, course_id=course_id, data=request.POST)
+        form = StudentLocationForm(instance=student, user_id=user_id, course_id=course_id, data=request.POST)
     else:
         logger.debug('student is None')
-        form = StudentLocationForm(user_id=enc_user_id, course_id=course_id, data=request.POST)
-
-    logger.debug('form is valid: '+ str(form.is_valid()))
+        form = StudentLocationForm(user_id=user_id, course_id=course_id, data=request.POST)
 
     if form.is_valid():
         theform = form.save(commit=False)
-        theform.user_id = enc_user_id
+        theform.user_id = user_id
         theform.course_id = course_id
         theform.save()
         key = settings.STUDENT_LOCATIONS_TOOL.get('google_map_api_v3_key')
@@ -131,22 +103,24 @@ def addoredituser(request):
     else:
         return render(request, 'student_locations/user_edit_view.html', {'request': request, 'form': form})
 
-#@login_required()
+@login_required()
 @require_http_methods(['GET'])
 def table_view(request):
-    
-    course_id = request.session['lis_course_offering_sourcedid']
-    students = Locations.objects.filter(course_id=course_id)
-    logger.debug('course_id: '+course_id)
+    """
+    renders the data and display of the table view of students
+    """
+    course_id = getparamfromsession(request, 'lis_course_offering_sourcedid')
+    user_id = getparamfromsession(request, 'user_id')
     return render(request, 'student_locations/table_view.html', {'request': request, 'data' : students})
 
-#@login_required()
+@login_required()
 @require_http_methods(['GET'])
 def markers_class_xml(request):
-      
-    course_id = request.session['lis_course_offering_sourcedid']
+    """
+    reders the XML containing the location data for the google map
+    """
+    course_id = getparamfromsession(request, 'lis_course_offering_sourcedid')
     students = Locations.objects.filter(course_id=course_id)
-
     return render_to_response('student_locations/markers.xml',
                           {'data' : students},
                           context_instance=RequestContext(request)) 

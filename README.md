@@ -1,12 +1,9 @@
 student locations
 =================
 
-an LTI tool that allows students to add thier location and contact info to a google map
+An LTI tool that allows students to add thier location and contact info to a google map
 
 ###How to setup this app###
-
-Create or use and exisitng Django project
-
 
 To make it as easy as possible to get up and running, I've included a sample settings.py file called settings.py.sample
 and a sample secure.py file called secure.py.sample. Secure.py will contain your secure settings that should be not checked into

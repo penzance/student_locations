@@ -7,4 +7,4 @@ django-crispy-forms
 django-cached-authentication-middleware>=0.2.0
 django-debug-toolbar
 
-git+ssh://git@github.com/Harvard-University-iCommons/django-auth-lti.git@master#egg=django-auth-lti
+git+ssh://git@github.com/penzance/django-auth-lti.git@master#egg=django-auth-lti

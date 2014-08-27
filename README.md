@@ -54,4 +54,12 @@ As long as you don't see any errors you should be able to naviage to the index p
 ```
 http://localhost:8000/student_locations/
 ```
+To add the tool to your LMS user the lti_launch url
+```
+http://localhost:8000/student_locations/lti_launch
+```
 
+If you are using Canvas you can also use the tool_config url an choose paste XML to add the tool.
+```
+http://localhost:8000/student_locations/tool_config
+```

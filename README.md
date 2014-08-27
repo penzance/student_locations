@@ -10,9 +10,9 @@ Create or use and exisitng Django project
 
 To make it as easy as possible to get up and running, I've included a sample settings.py file called settings.py.sample
 and a sample secure.py file called secure.py.sample. Secure.py will contain your secure settings that should be not checked into
-git (there is a line in the .gitignore to ignore this file). 
+git (there is a line in the .gitignore file to ignore the secure.py file). 
 
-To get started, create a new django project
+To get started, create a new django project.
 
 ```
 django-admin.py startproject myproject
@@ -24,6 +24,31 @@ Clone the git repository to the project
 cd myproject
 git clone https://github.com/penzance/student-locations.git
 ```
+
+Copy the settings.py.sample and secure.py.sample to the project folder. If you are in the new project folder called myproject, there should be a folder there also called myproject. This is where you want to copy the files.
+
+```
+cd myproject
+You should now be under two levels of myproject (myproject/myproject)
+cp ../student_locations/settings.py.sample .
+cp ../student_locations/secure.py.sample .
+```
+
+Now make a backup of the original settings.py file
+
+```
+cp settings.py settings.py.backup
+```
+
+Now renames the files
+
+```
+mv settings.py.sample settings.py
+mv secure.py.sample secure.py
+now cd back up to the root project folder
+cd ..
+```
+(You will need to fill in the secure values in the secure.py file)
 
 Now run a pip install on the
 requirements file.

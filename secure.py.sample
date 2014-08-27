@@ -1,0 +1,11 @@
+
+SECURE_SETTINGS = {
+
+    'lti_oauth_credentials': {
+        'changeme': 'changeme',
+    },
+    'google_map_api_v3_key' : 'changeme',
+    'django_secret_key' : 'changeme',
+
+}
+

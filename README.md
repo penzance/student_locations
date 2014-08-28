@@ -27,8 +27,8 @@ Copy the settings.py.sample and secure.py.sample to the project folder. If you a
 ```
 cd myproject
 You should now be under two levels of myproject (myproject/myproject)
-cp ../student_locations/settings.py.sample .
-cp ../student_locations/secure.py.sample .
+cp ../student-locations/settings.py.sample .
+cp ../student-locations/secure.py.sample .
 ```
 
 Now make a backup of the original settings.py file
@@ -50,7 +50,7 @@ cd ..
 Now run a pip install on the
 requirements file.
 ```
-pip install -r student_locations/requirements.txt
+pip install -r student-locations/requirements.txt
 ```
 
 Move the folder called static to the root of the project.

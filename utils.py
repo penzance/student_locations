@@ -2,6 +2,9 @@ import urlparse
 from django.conf import settings
 
 def getlatlongfromurl(mapurl):
+    """
+    try to parse the lat/long data from the mapurl
+    """
     query = urlparse.urlparse(mapurl).query
     query_dict = urlparse.parse_qs(query)
     if 'll' in query_dict:
@@ -14,7 +17,7 @@ def getlatlongfromurl(mapurl):
                 if len(latlonglist) == 3:
                     latlonglist.pop()
                     return ','.join(latlonglist)[1:]
-
+    
 def validaterequiredltiparams(request):
     """
     verify that the required LTI parameters are present in the request object.

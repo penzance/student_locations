@@ -20,6 +20,8 @@ Clone the git repository to the project
 ```
 cd myproject
 git clone https://github.com/penzance/student-locations.git
+# then we need to rename the directory
+mv student-locations student_locations
 ```
 
 Add this line to the project urls.py file

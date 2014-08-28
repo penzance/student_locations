@@ -5,7 +5,8 @@ from django.db import models
 
 
 class Locations(models.Model):
-    course_id = models.IntegerField()
+    #course_id = models.IntegerField()
+    resource_link_id = models.CharField(max_length=50)
     user_id = models.CharField(max_length=50)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -27,4 +28,4 @@ class Locations(models.Model):
     method = models.CharField(max_length=10)
 
     class Meta:
-        unique_together = (("course_id", "user_id"),)
+        unique_together = (("resource_link_id", "user_id"),)

@@ -22,11 +22,11 @@ class StudentLocationForm(forms.ModelForm):
 
     class Meta:
         model = Locations
-        exclude = ['user_id', 'method', 'generated_latitude', 'generated_longitude', 'locality', 'region', 'course_id', 'country']
+        exclude = ['user_id', 'method', 'generated_latitude', 'generated_longitude', 'locality', 'region', 'resource_link_id', 'country']
 
 
     user_id = forms.CharField(required=False, widget=forms.HiddenInput())
-    course_id = forms.IntegerField(required=False, widget=forms.HiddenInput())
+    resource_link_id = forms.CharField(required=False, widget=forms.HiddenInput())
     locality = forms.CharField(required=False, widget=forms.HiddenInput())
     region = forms.CharField(required=False, widget=forms.HiddenInput())
     country = forms.CharField(required=False, widget=forms.HiddenInput())
@@ -92,10 +92,10 @@ class StudentLocationForm(forms.ModelForm):
         required=False,
     )
 
-    def __init__(self, user_id=None, course_id=None, *args, **kwargs):
+    def __init__(self, user_id=None, resource_link_id=None, *args, **kwargs):
         super(StudentLocationForm, self).__init__(*args, **kwargs)
         self._user_id = user_id
-        self._course_id = course_id
+        self._resource_link_id = resource_link_id
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
@@ -318,7 +318,7 @@ class StudentLocationForm(forms.ModelForm):
                     cleaned_data['region'] = component.get('short_name')
 
         cleaned_data['user_id'] = self._user_id
-        cleaned_data['course_id'] = self._course_id
+        cleaned_data['resource_link_id'] = self._resource_link_id
 
         #for key,value in cleaned_data.items():
         #    logger.debug('Key: '+key+', Value='+str(value))

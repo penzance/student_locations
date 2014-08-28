@@ -57,13 +57,13 @@ def user_edit_view(request):
     Displays the user edit view which allows users to enter their contact
     and Location data for display on the google map.
     """
-    course_id = getparamfromsession(request, 'lis_course_offering_sourcedid')
+    resource_link_id = getparamfromsession(request, 'resource_link_id')
     user_id = getparamfromsession(request, 'user_id')
-    if not course_id or not user_id:
+    if not resource_link_id or not user_id:
         return render(request, 'student_locations/error.html', {'message': 'Unable to retrieve params from session. You might want to try reloading the tool.'})
    
     try:
-        student = Locations.objects.get(course_id=course_id, user_id=user_id)
+        student = Locations.objects.get(resource_link_id=resource_link_id, user_id=user_id)
     except Locations.DoesNotExist:
         student = None
 
@@ -79,24 +79,24 @@ def addoredituser(request):
     """
     The action method for the user_edit_view form.
     """
-    course_id = getparamfromsession(request, 'lis_course_offering_sourcedid')
+    resource_link_id = getparamfromsession(request, 'resource_link_id')
     user_id = getparamfromsession(request, 'user_id')
     
     try:
-        student = Locations.objects.get(course_id=course_id, user_id=user_id)
+        student = Locations.objects.get(resource_link_id=resource_link_id, user_id=user_id)
     except Locations.DoesNotExist:
         student = None
 
     if student:
-        form = StudentLocationForm(instance=student, user_id=user_id, course_id=course_id, data=request.POST)
+        form = StudentLocationForm(instance=student, user_id=user_id, resource_link_id=resource_link_id, data=request.POST)
     else:
         logger.debug('student is None')
-        form = StudentLocationForm(user_id=user_id, course_id=course_id, data=request.POST)
+        form = StudentLocationForm(user_id=user_id, resource_link_id=resource_link_id, data=request.POST)
 
     if form.is_valid():
         theform = form.save(commit=False)
         theform.user_id = user_id
-        theform.course_id = course_id
+        theform.resource_link_id = resource_link_id
         theform.save()
         key = settings.STUDENT_LOCATIONS_TOOL.get('google_map_api_v3_key')
         return render(request, 'student_locations/map_view.html', {'request': request, 'api_key' : key})
@@ -109,8 +109,8 @@ def table_view(request):
     """
     renders the data and display of the table view of students
     """
-    course_id = getparamfromsession(request, 'lis_course_offering_sourcedid')
-    user_id = getparamfromsession(request, 'user_id')
+    resource_link_id = getparamfromsession(request, 'resource_link_id')
+    students = Locations.objects.filter(resource_link_id=resource_link_id)
     return render(request, 'student_locations/table_view.html', {'request': request, 'data' : students})
 
 @login_required()
@@ -119,8 +119,8 @@ def markers_class_xml(request):
     """
     reders the XML containing the location data for the google map
     """
-    course_id = getparamfromsession(request, 'lis_course_offering_sourcedid')
-    students = Locations.objects.filter(course_id=course_id)
+    resource_link_id = getparamfromsession(request, 'resource_link_id')
+    students = Locations.objects.filter(resource_link_id=resource_link_id)
     return render_to_response('student_locations/markers.xml',
                           {'data' : students},
                           context_instance=RequestContext(request)) 

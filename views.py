@@ -15,7 +15,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-@login_required()
 @require_http_methods(['GET'])
 def index(request):
     """

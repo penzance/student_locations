@@ -10,30 +10,10 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from sys import path
-from os.path import abspath, basename, dirname, join, normpath
+from os.path import join, normpath
 from .secure import SECURE_SETTINGS
-
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-DJANGO_PROJECT_CONFIG = dirname(dirname(abspath(__file__)))
-SITE_ROOT = dirname(DJANGO_PROJECT_CONFIG)
-SITE_NAME = basename(SITE_ROOT)
 
-# Add our project to our pythonpath, this way we don't need to type our project
-# name in our dotted import paths:
-path.append(SITE_ROOT)
-
-STATIC_URL = '/myproject/static/'
-
-# Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    normpath(join(DJANGO_PROJECT_CONFIG, 'static')),
-)
-
-STATIC_ROOT = normpath(join(DJANGO_PROJECT_CONFIG, 'http_static'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -48,6 +28,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -57,9 +38,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'student_locations',
-    'crispy_forms',
-    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -70,11 +48,6 @@ MIDDLEWARE_CLASSES = (
     'django_auth_lti.middleware.LTIAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
-)
-
-AUTHENTICATION_BACKENDS = (
-    'django_auth_lti.backends.LTIAuthBackend',
 )
 
 ROOT_URLCONF = 'myproject.urls'
@@ -95,22 +68,6 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-# added
-
-STUDENT_LOCATIONS_TOOL = {
-    'google_map_api_v3_key': SECURE_SETTINGS.get('google_map_api_v3_key'),
-    'required_lti_params' : [
-        'lis_course_offering_sourcedid',
-        'user_id',
-        ]
-}
-
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
-
-LTI_OAUTH_CREDENTIALS = SECURE_SETTINGS.get('lti_oauth_credentials')
-
-# end
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -121,15 +78,57 @@ USE_L10N = True
 
 USE_TZ = True
 
-#For Django Debug Toolbar:
-INTERNAL_IPS = ('127.0.0.1')
-DEBUG_TOOLBAR_CONFIG = {
-   'INTERCEPT_REDIRECTS': False,
-}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
+STATIC_URL = BASE_DIR+'/static/'
+
+##################################
+# End default project settings
+##################################
+
+INSTALLED_APPS += ('student_locations', 'crispy_forms', 'debug_toolbar')
+
+STATIC_ROOT = normpath(join(BASE_DIR, 'http_static'))
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    normpath(join(BASE_DIR, 'static')),
+)
+
+AUTHENTICATION_BACKENDS = (
+    'django_auth_lti.backends.LTIAuthBackend',
+)
+
+# Tool specific settings
+STUDENT_LOCATIONS_TOOL = {
+    'google_map_api_v3_key': SECURE_SETTINGS.get('google_map_api_v3_key'),
+    'required_lti_params' : [
+        'resource_link_id',
+        'user_id',
+        ]
+}
+
+# set the crispy template pack to use bootstrap3
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+# LTI credentials
+LTI_OAUTH_CREDENTIALS = SECURE_SETTINGS.get('lti_oauth_credentials')
+
+#For Django Debug Toolbar:
+INTERNAL_IPS = ('127.0.0.1')
+DEBUG_TOOLBAR_CONFIG = {
+   'DISABLE_PANELS': set(['debug_toolbar.panels.redirects.RedirectsPanel']),
+}
+
+
+LOG_FILE_NAME = 'lti_tools.log'
+
+# Logging settings
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -156,7 +155,7 @@ LOGGING = {
         'logfile': {
             'level': 'DEBUG',
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': 'lti_tools.log',
+            'filename': LOG_FILE_NAME,
             'formatter': 'verbose',
         },
         'console': {
@@ -196,7 +195,8 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-
     }
 }
+
+
 

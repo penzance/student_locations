@@ -26,7 +26,7 @@ mv student-locations student_locations
 
 Add this line to the project urls.py file
 ```
-url(r'^student_locations/', include('student_locations.urls', namespace="sl")),
+url(r'^myproject/student_locations/', include('student_locations.urls', namespace="sl")),
 ```
 
 Copy the settings.py.sample and secure.py.sample to the project folder. If you are in the new project folder called myproject, there should be a folder there also called myproject. This is where you want to copy the files.

@@ -5,7 +5,6 @@ from django.db import models
 
 
 class Locations(models.Model):
-    #course_id = models.IntegerField()
     resource_link_id = models.CharField(max_length=50)
     user_id = models.CharField(max_length=50)
     first_name = models.CharField(max_length=50)

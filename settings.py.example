@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
+# I've commented out the admin class
 INSTALLED_APPS = (
     #'django.contrib.admin',
     'django.contrib.auth',
@@ -40,6 +42,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 )
 
+
+# I've commented out classes we don't need
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -123,7 +127,7 @@ INTERNAL_IPS = ('127.0.0.1')
 DEBUG_TOOLBAR_CONFIG = {
    'DISABLE_PANELS': set(['debug_toolbar.panels.redirects.RedirectsPanel']),
 }
-
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 LOG_FILE_NAME = 'lti_tools.log'
 

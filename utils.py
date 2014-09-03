@@ -32,3 +32,12 @@ def getparamfromsession(request, param):
     return lti_launch.get(param)
 
 
+def check_resource_link_id(resource_link_id, request_resource_link_id):
+    """
+    This helper method is to check that resource_link_id from most recent 
+    lti launch matches the one from  the request. 
+    """
+    if resource_link_id == request_resource_link_id:
+        return True
+    return False    
+

@@ -92,3 +92,9 @@ If you are using Canvas you can also use the tool_config url an choose paste XML
 ```
 http://localhost:8000/student_locations/tool_config
 ```
+
+There are also tests available in the tests folder. Right now, all the tests are in the file called tests.py. The other test files are empty, I am planning to add more tests and break them out by view later. See the example below on how to run the tests. Make sure you are in the project directory where the manage.py file lives.
+
+```
+python manage.py test
+```

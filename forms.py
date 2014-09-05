@@ -220,13 +220,10 @@ class StudentLocationForm(forms.ModelForm):
             # We validate that we got a real url and not just a string of data
             try:
                 urllib.urlopen(mapurl)
-                #query = urlparse.urlparse(mapurl).query
-                #query_dict = urlparse.parse_qs(query)
-                #https://www.google.com/maps/@42.2733204,-83.7376894,12z
+                # https://www.google.com/maps/@42.2733204,-83.7376894,12z
                 # https://www.google.com/maps/place/Antarctica/@-75,0,2z/data=!3m1!4b1!4m2!3m1!1s0xb09dff882a7809e1:0xb08d0a385dc8c7c7
 
                 latlong = getlatlongfromurl(mapurl)
-                print latlong
                             
                 if latlong:
                     cleaned_data['mapurl'] = mapurl

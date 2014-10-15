@@ -32,6 +32,13 @@ setup(
     ],
     install_requires=[
         "Django>=1.6",
+        "ims_lti_py",
+        "lxml",
+        "oauth2",
+        "requests",
+        "django-crispy-forms",
+        "django-cached-authentication-middleware>=0.2.0"
+        "django-auth-lti",
     ],
     tests_require=[
         'mock',

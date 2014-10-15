@@ -1,5 +1,8 @@
+** THIS IS OUT OF DATE on DEVELOP ** 
 student locations
 =================
+
+
 
 An LTI tool that allows students to add thier location and contact info to a google map
 
